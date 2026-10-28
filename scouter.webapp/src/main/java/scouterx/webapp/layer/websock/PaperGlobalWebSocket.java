@@ -164,7 +164,6 @@ public class PaperGlobalWebSocket {
     @OnOpen
     public void onOpen(Session session) {
         subscriptions.put(session, new ClientParams());
-        log.info("WebSocket Connect: {}", session.getUserProperties().get("client-ip"));
         String payload = String.format("{\"type\":\"%s\", \"data\":\"%s\"}", "MESSAGE", "You are now connected to " + this.getClass().getName());
         session.getAsyncRemote().sendText(payload);
     }
@@ -173,7 +172,6 @@ public class PaperGlobalWebSocket {
     public void onMessage(String message, Session session) {
         try {
             subscriptions.put(session, mapper.readValue(message, ClientParams.class));
-            log.info("WebSocket Subscription Update: {} - {}", session.getUserProperties().get("client-ip"), message);
         } 
         catch (Exception e) { e.printStackTrace(); }
     }
@@ -183,7 +181,6 @@ public class PaperGlobalWebSocket {
         try {
             subscriptions.remove(session);
             session.close();
-            log.info("WebSocket Close: {}", session.getUserProperties().get("client-ip"));
         } catch (IOException e) { e.printStackTrace(); }
     }
 
